@@ -1,17 +1,209 @@
-.grid {
-    width: 200px;
-    height: 400px;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: yellow;
+/* CSS - Updated Names */
+:root {
+  font-size: 0.625em; /* Base font size is 10px */
 }
 
-.grid div{
-    height:20px;
-    width: 20px;
+* {
+  box-sizing: border-box;
 }
 
-.tetromino {
-    background-color: blue;
+body {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.6rem;
+  margin: auto;
+  max-width: 60rem;
+  color: #d8edea;
+  background: radial-gradient(
+    circle,
+    rgba(175, 196, 174, 1) 0%,
+    rgba(104, 204, 191, 1) 89%,
+    rgba(94, 191, 178, 1) 100%
+  );
+}
 
+header {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+div {
+  height: 2rem;
+  width: 2rem;
+}
+
+/* Utility Classes */
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-large {
+  font-size: 1.5em;
+}
+
+.text-wide {
+  letter-spacing: 1.5rem;
+}
+
+.text-close {
+  letter-spacing: 1rem;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.score-display {
+  font-size: 5rem;
+  color: rgba(133, 121, 107, 0.5);
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+}
+
+.game-area {
+  height: 0;
+  width: 300px;
+}
+
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 20rem;
+  height: 40rem;
+}
+
+.next-piece {
+  width: 10rem;
+  padding-left: 2rem;
+  margin-top: -5rem;
+}
+
+.mini-grid {
+  display: flex;
+  flex-wrap: wrap;
+  width: 8rem;
+  height: 8rem;
+}
+
+.block-blue {
+  background-image: url(../images/blue_block.png);
+}
+
+.block-purple {
+  background-image: url(../images/purple_block.png);
+}
+
+.block-green {
+  background-image: url(../images/green_block.png);
+}
+
+.block-navy {
+  background-image: url(../images/navy_block.png);
+}
+
+.block-pink {
+  background-image: url(../images/pink_block.png);
+}
+
+.game-over {
+  background-color: #d8edea;
+}
+
+.button {
+  position: relative;
+  width: 22rem;
+  height: 2.2rem;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 1px;
+  text-decoration: none;
+  line-height: 23px;
+  font-size: 10px;
+  display: block;
+  margin: 30px;
+  text-shadow: -1px -1px 0 #a84155;
+  background: #d25068;
+  border: 1px solid #d25068;
+  width: 12rem;
+  background-image: linear-gradient(to bottom, #f66c7b, #d25068);
+  border-radius: 5px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.1) inset, 0 4px 0 #ad4257,
+    0 4px 2px rgba(0, 0, 0, 0.5);
+}
+
+.button:before {
+  background: #f0f0f0;
+  background-image: linear-gradient(#d0d0d0, #f0f0f0);
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) inset, 0 1px 0 #fff;
+  position: absolute;
+  content: "";
+  left: -6px;
+  right: -6px;
+  top: -6px;
+  bottom: -10px;
+  z-index: -1;
+}
+
+.button:active {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.1) inset;
+  top: 5px;
+}
+
+.button:active:before {
+  top: -11px;
+  bottom: -5px;
+  content: "";
+}
+
+.button:hover {
+  background: #f66c7b;
+  background-image: linear-gradient(top, #d25068, #f66c7b);
+}
+
+/* Menu Styles */
+.menu-container {
+  max-width: 600px;
+  padding: 0 3rem;
+  margin: auto;
+  overflow: hidden;
+}
+
+.menu-toggle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.menu-content {
+  text-align: center;
+  margin-top: 230px;
+  width: 200vw;
+  height: 200vh;
+  border-radius: 50%;
+  transition: all 0.8s ease;
+}
+
+.rules {
+  font-size: 12px;
+  transition: color 0.4s ease;
+}
+
+.key-highlight {
+  color: #f8de7e;
+}
+
+.close-btn {
+  border-radius: 5px;
+  color: rgba(24, 39, 51, 0.85);
 }
