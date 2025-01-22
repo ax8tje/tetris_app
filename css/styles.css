@@ -1,4 +1,4 @@
-/* CSS - Updated Names */
+/* Root Styling */
 :root {
   font-size: 0.625em; /* Base font size is 10px */
 }
@@ -10,8 +10,6 @@
 body {
   font-family: "Montserrat", sans-serif;
   font-size: 1.6rem;
-  margin: auto;
-  max-width: 60rem;
   color: #d8edea;
   background: radial-gradient(
     circle,
@@ -19,191 +17,152 @@ body {
     rgba(104, 204, 191, 1) 89%,
     rgba(94, 191, 178, 1) 100%
   );
-}
-
-header {
-  text-align: center;
-  margin-top: 3rem;
-}
-
-div {
-  height: 2rem;
-  width: 2rem;
-}
-
-/* Utility Classes */
-.text-uppercase {
-  text-transform: uppercase;
-}
-
-.text-large {
-  font-size: 1.5em;
-}
-
-.text-wide {
-  letter-spacing: 1.5rem;
-}
-
-.text-close {
-  letter-spacing: 1rem;
-}
-
-.font-light {
-  font-weight: 300;
-}
-
-.font-normal {
-  font-weight: 400;
-}
-
-.score-display {
-  font-size: 5rem;
-  color: rgba(133, 121, 107, 0.5);
-}
-
-.game-container {
   display: flex;
   justify-content: center;
-}
-
-.game-area {
-  height: 0;
-  width: 300px;
-}
-
-.grid-container {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  width: 20rem;
-  height: 40rem;
+  min-height: 100vh;
+  margin: 0;
 }
 
-.next-piece {
-  width: 10rem;
-  padding-left: 2rem;
-  margin-top: -5rem;
+/* Main Layout */
+.main-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Game Area */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Main Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, 20px); /* Adjusted for block size */
+  grid-template-rows: repeat(20, 20px);
+  gap: 0;
+  border: 4px solid #777; /* Border around the game area */
+  border-radius: 8px; /* Optional for a rounded border look */
+  background-color: transparent;
+}
+
+.grid div {
+  width: 20px;
+  height: 20px;
+  background-color: transparent; /* Remove background */
+}
+
+/* Next Block Display */
+.next-display {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.next-display p {
+  margin: 0.5rem 0;
+  font-size: 1.4rem;
+  color: #ffffff;
 }
 
 .mini-grid {
-  display: flex;
-  flex-wrap: wrap;
-  width: 8rem;
-  height: 8rem;
+  display: grid;
+  grid-template-columns: repeat(4, 20px);
+  grid-template-rows: repeat(4, 20px);
+  gap: 0;
+  border: 4px solid #777;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  background-color: transparent;
+  justify-content: center;
+  align-items: center;
+}
+
+.mini-grid div {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+}
+
+
+/* Tetromino Colors with Block Images */
+.tetromino {
+  background-size: cover;
 }
 
 .block-blue {
-  background-image: url(../images/blue_block.png);
-}
-
-.block-purple {
-  background-image: url(../images/purple_block.png);
+  background-image: url('../images/blue_block.png');
 }
 
 .block-green {
-  background-image: url(../images/green_block.png);
+  background-image: url('../images/green_block.png');
 }
 
 .block-navy {
-  background-image: url(../images/navy_block.png);
+  background-image: url('../images/navy_block.png');
+}
+
+.block-peach {
+  background-image: url('../images/peach_block.png');
 }
 
 .block-pink {
-  background-image: url(../images/pink_block.png);
+  background-image: url('../images/pink_block.png');
 }
 
-.game-over {
-  background-color: #d8edea;
+.block-purple {
+  background-image: url('../images/purple_block.png');
 }
 
-.button {
-  position: relative;
-  width: 22rem;
-  height: 2.2rem;
+.block-yellow {
+  background-image: url('../images/yellow_block.png');
+}
+
+/* Score Section */
+.score-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Score Display */
+.score-display {
+  font-size: 2rem;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
   text-align: center;
-  color: #fff;
-  letter-spacing: 1px;
-  text-decoration: none;
-  line-height: 23px;
-  font-size: 10px;
-  display: block;
-  margin: 30px;
-  text-shadow: -1px -1px 0 #a84155;
-  background: #d25068;
-  border: 1px solid #d25068;
-  width: 12rem;
-  background-image: linear-gradient(to bottom, #f66c7b, #d25068);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+}
+
+.score-display p {
+  margin: 0.5rem 0;
+}
+
+/* Start Button */
+#start-button {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  color: #ffffff;
+  background: linear-gradient(to bottom, #f66c7b, #d25068);
+  border: none;
   border-radius: 5px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
-    0 -1px 0 rgba(255, 255, 255, 0.1) inset, 0 4px 0 #ad4257,
-    0 4px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
 }
 
-.button:before {
-  background: #f0f0f0;
-  background-image: linear-gradient(#d0d0d0, #f0f0f0);
-  border-radius: 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) inset, 0 1px 0 #fff;
-  position: absolute;
-  content: "";
-  left: -6px;
-  right: -6px;
-  top: -6px;
-  bottom: -10px;
-  z-index: -1;
+#start-button:hover {
+  background: linear-gradient(to bottom, #d25068, #f66c7b);
+  transform: scale(1.05);
 }
 
-.button:active {
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset,
-    0 -1px 0 rgba(255, 255, 255, 0.1) inset;
-  top: 5px;
-}
-
-.button:active:before {
-  top: -11px;
-  bottom: -5px;
-  content: "";
-}
-
-.button:hover {
-  background: #f66c7b;
-  background-image: linear-gradient(top, #d25068, #f66c7b);
-}
-
-/* Menu Styles */
-.menu-container {
-  max-width: 600px;
-  padding: 0 3rem;
-  margin: auto;
-  overflow: hidden;
-}
-
-.menu-toggle {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.menu-content {
-  text-align: center;
-  margin-top: 230px;
-  width: 200vw;
-  height: 200vh;
-  border-radius: 50%;
-  transition: all 0.8s ease;
-}
-
-.rules {
-  font-size: 12px;
-  transition: color 0.4s ease;
-}
-
-.key-highlight {
-  color: #f8de7e;
-}
-
-.close-btn {
-  border-radius: 5px;
-  color: rgba(24, 39, 51, 0.85);
+#start-button:active {
+  transform: scale(0.95);
 }
