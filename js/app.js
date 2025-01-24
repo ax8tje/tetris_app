@@ -211,13 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     
-    
+    let isGameOver = false;
 
     // End the game if a Tetromino cannot move
     function gameOver() {
         if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) {
             scoreDisplay.textContent = 'Game Over';
             clearInterval(timerId);
+            isGameOver = true;
         }
     }
 
@@ -249,15 +250,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Start or pause the game
     startButton.addEventListener('click', () => {
-        if (timerId) {
-            clearInterval(timerId);
-            timerId = null;
+        if (isGameOver) {
+            restartGame();
         } else {
-            draw();
-            timerId = setInterval(moveDown, speed);
-            displayNextTetromino();
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            } else {
+                draw();
+                timerId = setInterval(moveDown, speed);
+                displayNextTetromino();
+            }
         }
     });
+
+    // Restart game with start/pause button
+    function restartGame() {
+        isGameOver = false;
+        score = 0;
+        lines = 0;
+        scoreDisplay.textContent = score;
+        linesDisplay.textContent = lines;
+        currentPosition = 4;
+        currentRotation = 0;
+    
+        squares.forEach((square) => {
+            square.classList.remove('tetromino', 'taken', ...colors);
+        });
+    
+        random = Math.floor(Math.random() * theTetrominoes.length);
+        current = theTetrominoes[random][currentRotation];
+        nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+        displayNextTetromino();
+
+        draw();
+        timerId = setInterval(moveDown, speed);
+    }
+    
 
     // Handle keyboard controls for Tetromino movement
     document.addEventListener('keydown', (e) => {
