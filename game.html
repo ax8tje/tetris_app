@@ -1,15 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/app.js" charset="utf-8"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+    <script src="js/app.js" charset="utf-8" defer></script>
+    <script src="script.js" defer></script>
   </head>
   <body>
+    <div class="hamburger" aria-label="Open menu">☰</div>
+
+    <div class="menu" style="display: none;">
+      <button class="close-menu" aria-label="Close menu">✖</button>
+      <ul>
+        <li><button id="home-link">Home</button></li>
+        <li><button id="how-to-play-link">How to Play</button></li>
+      </ul>
+    </div>
+
     <div class="main-container">
-      <div class="container">
-        <div class="grid"></div>
+      <div class="game-container">
+        <div class="grid">
+        </div>
       </div>
 
       <div class="score-section">
@@ -20,10 +34,12 @@
         <div class="score-display">
           <p>YOUR SCORE</p>
           <h3 id="score">0</h3>
-          <p>LINES:<span id="lines">0</span></p>
+          <p>LINES: <span id="lines">0</span></p>
         </div>
-        <button id="start-button">Start/Pause</button>
+        <button id="start-button" aria-label="Start or Pause the game">Start/Pause</button>
       </div>
     </div>
+
+    <button id="dark-mode-toggle" aria-label="Toggle dark mode"></button>
   </body>
 </html>

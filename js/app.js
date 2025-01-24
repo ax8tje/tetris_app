@@ -1,15 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const GRID_WIDTH = 10; // Main grid width
-    const GRID_HEIGHT = 20; // Main grid height
-    const GRID_SIZE = GRID_WIDTH * GRID_HEIGHT; // Total size of the grid
-    const MINI_GRID_SIZE = 16; // Size of the mini-grid (4x4)
+    // Constants for grid dimensions and game speed
+    const GRID_WIDTH = 10;
+    const GRID_HEIGHT = 20;
+    const GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
+    const MINI_GRID_SIZE = 16;
     const speed = 1000;
 
+    // DOM elements for game and UI
     const grid = document.querySelector('.grid');
     const miniGrid = document.querySelector('.mini-grid');
     const scoreDisplay = document.querySelector('#score');
     const linesDisplay = document.querySelector('#lines');
     const startButton = document.querySelector('#start-button');
+
+    // DOM elements for the hamburger menu and navigation
+    const hamburger = document.querySelector('.hamburger');
+    const menu = document.querySelector('.menu');
+    const closeMenu = document.querySelector('.close-menu');
+    const homeLink = document.querySelector('#home-link');
+    const howToPlayLink = document.querySelector('#how-to-play-link');
 
     const squares = [];
     const miniSquares = [];
@@ -17,105 +26,101 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let lines = 0;
 
-    // Function to dynamically create the grids
+    // Function to create the main grid and mini-grid
     function createGrid() {
-        // Create main grid
+        // Create main grid cells
         for (let i = 0; i < GRID_SIZE; i++) {
             const gridElement = document.createElement('div');
             grid.appendChild(gridElement);
         }
 
-        // Base row for the main grid
+        // Add a bottom row with "taken" class for collision detection
         for (let i = 0; i < GRID_WIDTH; i++) {
             const gridElement = document.createElement('div');
             gridElement.setAttribute('class', 'taken');
             grid.appendChild(gridElement);
         }
 
-        // Create mini-grid for the next Tetromino display
+        // Create cells for the mini-grid
         for (let i = 0; i < MINI_GRID_SIZE; i++) {
             const miniGridElement = document.createElement('div');
             miniGrid.appendChild(miniGridElement);
         }
     }
 
-    // Initialize grids
     createGrid();
 
-    // Initialize square arrays for main and mini grids
+
+    // Add all grid and mini-grid cells to respective arrays
     document.querySelectorAll('.grid div').forEach((div) => squares.push(div));
     document.querySelectorAll('.mini-grid div').forEach((div) => miniSquares.push(div));
 
+    // Tetromino configurations for the main grid and mini-grid
     const width = 10;
     const miniWidth = 4;
 
-     // Tetromino definitions
-     const lTetromino = [
-        [1, width + 1, width * 2 + 1, 2],
-        [width, width + 1, width + 2, width * 2 + 2],
-        [1, width + 1, width * 2 + 1, width * 2],
-        [width, width * 2, width * 2 + 1, width * 2 + 2]
-      ];
-      
-      const zTetromino = [
+    const lTetromino = [
+        [1, width + 1, width * 2 + 1, width * 2 + 2],
+        [width, width + 1, width + 2, 2],
+        [0, 1, width + 1, width * 2 + 1],
+        [width, width + 1, width + 2, width * 2]
+    ];
+
+    const zTetromino = [
         [0, width, width + 1, width * 2 + 1],
         [width + 1, width + 2, width * 2, width * 2 + 1],
         [0, width, width + 1, width * 2 + 1],
         [width + 1, width + 2, width * 2, width * 2 + 1]
-      ];
-      
-      const tTetromino = [
+    ];
+
+    const tTetromino = [
         [1, width, width + 1, width + 2],
         [1, width + 1, width + 2, width * 2 + 1],
         [width, width + 1, width + 2, width * 2 + 1],
         [1, width, width + 1, width * 2 + 1]
-      ];
-      
-      const oTetromino = [
+    ];
+
+    const oTetromino = [
         [0, 1, width, width + 1],
         [0, 1, width, width + 1],
         [0, 1, width, width + 1],
         [0, 1, width, width + 1]
-      ];
-      
-      const iTetromino = [
+    ];
+
+    const iTetromino = [
         [1, width + 1, width * 2 + 1, width * 3 + 1],
         [width, width + 1, width + 2, width + 3],
         [1, width + 1, width * 2 + 1, width * 3 + 1],
         [width, width + 1, width + 2, width + 3]
-      ];
+    ];
 
     const sTetromino = [
-        [1, width, width + 1, width*2],
+        [1, width, width + 1, width * 2],
         [0, 1, width + 1, width + 2],
-        [1, width, width + 1, width*2],
-        [0, 1, width + 1, width + 2],
+        [1, width, width + 1, width * 2],
+        [0, 1, width + 1, width + 2]
     ];
 
     const jTetromino = [
-        [1, width+1, width*2, width*2+1],
-        [0, width, width+1,width+2 ],
+        [1, width + 1, width * 2, width * 2 + 1],
+        [0, width, width + 1, width + 2],
         [0, 1, width, width * 2],
-        [0, 1, 2, width + 2],
+        [0, 1, 2, width + 2]
     ];
 
-    const theTetrominoes = [
-        lTetromino, zTetromino, tTetromino, oTetromino, iTetromino, sTetromino, jTetromino
-    ];
+    const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino, sTetromino, jTetromino];
 
     const smallTetrominoes = [
-        [1, 5, 9, 2], // lTetromino
-        [0, 4, 5, 9], // zTetromino
-        [1, 4, 5, 6], // tTetromino
-        [0, 1, 4, 5], // oTetromino
-        [1, 5, 9, 13], // iTetromino
-        [1, 4, 5, 8], // sTetromino
-        [0, 4, 5, 6] // jTetromino
+        [1, 5, 9, 10],
+        [1, 5, 6, 10],
+        [1, 4, 5, 6],
+        [1, 2, 5, 6],
+        [1, 5, 9, 13],
+        [2, 5, 6, 9],
+        [1, 5, 9, 8]
     ];
 
-    const colors = [
-        'block-blue', 'block-green', 'block-navy', 'block-peach', 'block-pink', 'block-yellow', 'block-purple'
-    ];
+    const colors = ['block-blue', 'block-green', 'block-navy', 'block-peach', 'block-pink', 'block-yellow', 'block-purple'];
 
     let currentPosition = 4;
     let currentRotation = 0;
@@ -123,33 +128,36 @@ document.addEventListener('DOMContentLoaded', () => {
     let current = theTetrominoes[random][currentRotation];
     let nextRandom = Math.floor(Math.random() * theTetrominoes.length);
 
-    // Tetromino functions (draw, undraw, moveDown, freeze, etc.)
+    // Draw the current Tetromino on the grid
     function draw() {
-        current.forEach(index => {
+        current.forEach((index) => {
             squares[currentPosition + index].classList.add('tetromino');
             squares[currentPosition + index].classList.add(colors[random]);
         });
     }
 
+    // Remove the current Tetromino from the grid
     function undraw() {
-        current.forEach(index => {
+        current.forEach((index) => {
             squares[currentPosition + index].classList.remove('tetromino');
             squares[currentPosition + index].classList.remove(colors[random]);
         });
     }
 
+    // Display the next Tetromino in the mini-grid
     function displayNextTetromino() {
-        miniSquares.forEach(square => {
+        miniSquares.forEach((square) => {
             square.classList.remove('tetromino');
             square.classList.remove(...colors);
         });
 
-        smallTetrominoes[nextRandom].forEach(index => {
+        smallTetrominoes[nextRandom].forEach((index) => {
             miniSquares[index].classList.add('tetromino');
             miniSquares[index].classList.add(colors[nextRandom]);
         });
     }
 
+    // Move the Tetromino down by one row
     function moveDown() {
         undraw();
         currentPosition += width;
@@ -157,9 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
         freeze();
     }
 
+    // Check if the Tetromino should stop moving and freeze it
     function freeze() {
-        if (current.some(index => squares[currentPosition + index + width]?.classList.contains('taken'))) {
-            current.forEach(index => squares[currentPosition + index]?.classList.add('taken'));
+        if (current.some((index) => squares[currentPosition + index + width]?.classList.contains('taken'))) {
+            current.forEach((index) => squares[currentPosition + index]?.classList.add('taken'));
             random = nextRandom;
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
             current = theTetrominoes[random][currentRotation];
@@ -171,39 +180,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Add score for cleared rows
     function addScore() {
         for (let i = 0; i < 199; i += width) {
-            const row = [i, i + 1, i + 2, i + 3, i + 4, i + 5, i + 6, i + 7, i + 8, i + 9];
-            if (row.every(index => squares[index]?.classList.contains('taken'))) {
+            const row = [i, i + 1, i + 2, /* ...complete row */];
+            if (row.every((index) => squares[index]?.classList.contains('taken'))) {
                 score += 10;
                 lines++;
                 scoreDisplay.textContent = score;
                 linesDisplay.textContent = lines;
-
-                // Remove the row and clear Tetromino classes
-                row.forEach(index => {
-                    squares[index]?.classList.remove('taken', 'tetromino', ...colors);
-                });
-
-                // Shift down the rows above
+                row.forEach((index) => squares[index]?.classList.remove('taken', 'tetromino', ...colors));
                 const removedSquares = squares.splice(i, width);
                 squares.unshift(...removedSquares);
-                squares.forEach(cell => grid.appendChild(cell));
-
-                // Re-check and undraw any active Tetromino overlapping the cleared rows
+                squares.forEach((cell) => grid.appendChild(cell));
                 undraw();
                 draw();
             }
         }
     }
 
+    // End the game if a Tetromino cannot move
     function gameOver() {
-        if (current.some(index => squares[currentPosition + index]?.classList.contains('taken'))) {
+        if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) {
             scoreDisplay.textContent = 'Game Over';
             clearInterval(timerId);
         }
     }
 
+    // Move the Tetromino to the left
+    function moveLeft() {
+        undraw();
+        const isAtLeftEdge = current.some((index) => (currentPosition + index) % width === 0);
+        if (!isAtLeftEdge) currentPosition -= 1;
+        if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) currentPosition += 1;
+        draw();
+    }
+
+    // Move the Tetromino to the right
+    function moveRight() {
+        undraw();
+        const isAtRightEdge = current.some((index) => (currentPosition + index) % width === width - 1);
+        if (!isAtRightEdge) currentPosition += 1;
+        if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) currentPosition -= 1;
+        draw();
+    }
+
+    // Rotate the Tetromino
+    function rotate() {
+        undraw();
+        currentRotation = (currentRotation + 1) % current.length;
+        current = theTetrominoes[random][currentRotation];
+        draw();
+    }
+
+    // Start or pause the game
     startButton.addEventListener('click', () => {
         if (timerId) {
             clearInterval(timerId);
@@ -215,37 +245,89 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.addEventListener('keydown', e => {
+    // Handle keyboard controls for Tetromino movement
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') moveLeft();
         if (e.key === 'ArrowRight') moveRight();
         if (e.key === 'ArrowDown') moveDown();
         if (e.key === 'ArrowUp') rotate();
     });
 
-    function moveLeft() {
-        undraw();
-        const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0);
-        if (!isAtLeftEdge) currentPosition -= 1;
-        if (current.some(index => squares[currentPosition + index]?.classList.contains('taken'))) {
-            currentPosition += 1;
+    // Hamburger Menu Integration
+    function pauseGame() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
         }
-        draw();
     }
 
-    function moveRight() {
-        undraw();
-        const isAtRightEdge = current.some(index => (currentPosition + index) % width === width - 1);
-        if (!isAtRightEdge) currentPosition += 1;
-        if (current.some(index => squares[currentPosition + index]?.classList.contains('taken'))) {
-            currentPosition -= 1;
+    function resumeGame() {
+        if (!timerId) {
+            timerId = setInterval(moveDown, speed);
         }
-        draw();
     }
 
-    function rotate() {
-        undraw();
-        currentRotation = (currentRotation + 1) % current.length;
-        current = theTetrominoes[random][currentRotation];
-        draw();
+    // Open Menu
+    hamburger.addEventListener('click', () => {
+        menu.style.display = 'flex';
+    });
+
+    // Close Menu
+    closeMenu.addEventListener('click', () => {
+        menu.style.display = 'none';
+    });
+
+    // Navigate Back to Home
+    homeLink.addEventListener('click', () => {
+        window.location.href = 'home.html';
+    });
+
+    // Show How to Play Information
+    howToPlayLink.addEventListener('click', () => {
+        alert('How to Play:\n\n- Use Arrow Keys to move.\n- Rotate using Up Arrow.\n- Clear lines to score points.');
+    });
+
+    const darkModeToggle = document.createElement('button');
+    darkModeToggle.id = 'dark-mode-toggle';
+    darkModeToggle.textContent = '🌙';
+    document.body.appendChild(darkModeToggle);
+
+    const toggleDarkMode = () => {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            darkModeToggle.textContent = '☀️';
+        } else {
+            darkModeToggle.textContent = '🌙';
+        }
+    };
+
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+
+    // Optional: Save user preference for dark mode in localStorage
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.textContent = '☀️';
     }
+
+    darkModeToggle.addEventListener('click', () => {
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+
+    // Glow
+    const glow = document.createElement('div');
+    glow.classList.add('glow');
+    document.body.appendChild(glow);
+
+    document.addEventListener('mousemove', (e) => {
+    const x = e.pageX; 
+    const y = e.pageY; 
+
+    glow.style.left = `${x}px`;
+    glow.style.top = `${y}px`;
+    });
+
 });
