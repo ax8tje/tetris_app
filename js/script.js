@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigate Back to Home
     if (homeLink) {
         homeLink.addEventListener('click', () => {
-            window.location.href = 'home.html';
+            window.location.href = 'index.html';
         });
     }
 
