@@ -211,9 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     
-    let isGameOver = false;
 
     // End the game if a Tetromino cannot move
+    let isGameOver = false;
     function gameOver() {
         if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) {
             scoreDisplay.textContent = 'Game Over';
