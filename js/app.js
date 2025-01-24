@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if the Tetromino should stop moving and freeze it
     function freeze() {
         if (current.some((index) => squares[currentPosition + index + width]?.classList.contains('taken'))) {
-            current.forEach((index) => squares[currentPosition + index]?.classList.add('taken'));
+            current.forEach((index) => squares[currentPosition + index].classList.add('taken'));
             random = nextRandom;
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
             current = theTetrominoes[random][currentRotation];
@@ -179,25 +179,39 @@ document.addEventListener('DOMContentLoaded', () => {
             gameOver();
         }
     }
+    
 
     // Add score for cleared rows
     function addScore() {
-        for (let i = 0; i < 199; i += width) {
-            const row = [i, i + 1, i + 2, /* ...complete row */];
-            if (row.every((index) => squares[index]?.classList.contains('taken'))) {
+        for (let i = 0; i < GRID_HEIGHT; i++) {
+            const start = i * GRID_WIDTH;
+            const row = Array.from({ length: GRID_WIDTH }, (_, index) => start + index);
+    
+            if (row.every((index) => squares[index].classList.contains('taken'))) {
                 score += 10;
                 lines++;
                 scoreDisplay.textContent = score;
                 linesDisplay.textContent = lines;
-                row.forEach((index) => squares[index]?.classList.remove('taken', 'tetromino', ...colors));
-                const removedSquares = squares.splice(i, width);
-                squares.unshift(...removedSquares);
-                squares.forEach((cell) => grid.appendChild(cell));
-                undraw();
-                draw();
+    
+                row.forEach((index) => {
+                    squares[index].classList.remove('taken', 'tetromino', ...colors);
+                });
+    
+                const removedSquares = squares.splice(start, GRID_WIDTH);
+                const emptySquares = Array.from({ length: GRID_WIDTH }, () => {
+                    const emptySquare = document.createElement('div');
+                    return emptySquare;
+                });
+    
+                squares.unshift(...emptySquares);
+                grid.innerHTML = '';
+                squares.forEach((square) => grid.appendChild(square));
             }
         }
     }
+    
+    
+    
 
     // End the game if a Tetromino cannot move
     function gameOver() {

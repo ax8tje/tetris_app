@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigate Back to Home
     if (homeLink) {
         homeLink.addEventListener('click', () => {
-            window.location.href = 'index.html';
+            window.location.href = 'home.html';
         });
     }
 
@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (darkModeToggle) {
         darkModeToggle.addEventListener('click', toggleDarkMode);
 
+        // Check and apply saved dark mode preference
         if (localStorage.getItem('darkMode') === 'enabled') {
             document.body.classList.add('dark-mode');
             darkModeToggle.textContent = '☀️';
@@ -66,14 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Glow
     const glow = document.createElement('div');
     glow.classList.add('glow');
     document.body.appendChild(glow);
     
     document.addEventListener('mousemove', (e) => {
-      const x = e.pageX;
-      const y = e.pageY;
+      const x = e.pageX; 
+      const y = e.pageY; 
     
       glow.style.left = `${x}px`;
       glow.style.top = `${y}px`;
