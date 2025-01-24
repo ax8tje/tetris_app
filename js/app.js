@@ -26,34 +26,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let lines = 0;
 
-    // Function to create the main grid and mini-grid
     function createGrid() {
+        // Clear existing grid and mini-grid
+        grid.innerHTML = '';
+        miniGrid.innerHTML = '';
+        squares.length = 0;
+        miniSquares.length = 0;
+
         // Create main grid cells
         for (let i = 0; i < GRID_SIZE; i++) {
             const gridElement = document.createElement('div');
             grid.appendChild(gridElement);
+            squares.push(gridElement);
         }
-
+    
         // Add a bottom row with "taken" class for collision detection
         for (let i = 0; i < GRID_WIDTH; i++) {
             const gridElement = document.createElement('div');
             gridElement.setAttribute('class', 'taken');
             grid.appendChild(gridElement);
+            squares.push(gridElement);
         }
-
+    
         // Create cells for the mini-grid
         for (let i = 0; i < MINI_GRID_SIZE; i++) {
             const miniGridElement = document.createElement('div');
             miniGrid.appendChild(miniGridElement);
+            miniSquares.push(miniGridElement);
         }
     }
+    
 
     createGrid();
 
-
-    // Add all grid and mini-grid cells to respective arrays
-    document.querySelectorAll('.grid div').forEach((div) => squares.push(div));
-    document.querySelectorAll('.mini-grid div').forEach((div) => miniSquares.push(div));
 
     // Tetromino configurations for the main grid and mini-grid
     const width = 10;
@@ -183,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add score for cleared rows
     function addScore() {
-        for (let i = 0; i < GRID_HEIGHT; i++) {
+        for (let i = GRID_HEIGHT - 2; i >= 0; i--) { // Start from the second-to-last row
             const start = i * GRID_WIDTH;
             const row = Array.from({ length: GRID_WIDTH }, (_, index) => start + index);
     
@@ -204,11 +209,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
     
                 squares.unshift(...emptySquares);
+    
+                // Recreate bottom row with "taken" class
+                for (let j = GRID_SIZE - GRID_WIDTH; j < GRID_SIZE; j++) {
+                    squares[j].classList.add('taken');
+                }
+    
                 grid.innerHTML = '';
                 squares.forEach((square) => grid.appendChild(square));
+    
+                i++; // Recheck the current row
             }
         }
     }
+    
+    
+    
     
     
 
@@ -266,6 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Restart game with start/pause button
     function restartGame() {
+        clearInterval(timerId);
+        timerId = null;
+    
         isGameOver = false;
         score = 0;
         lines = 0;
@@ -274,10 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPosition = 4;
         currentRotation = 0;
     
-        squares.forEach((square) => {
-            square.classList.remove('tetromino', 'taken', ...colors);
-        });
-    
+        grid.innerHTML = '';
+        squares.length = 0;
+
+        createGrid();
+
         random = Math.floor(Math.random() * theTetrominoes.length);
         current = theTetrominoes[random][currentRotation];
         nextRandom = Math.floor(Math.random() * theTetrominoes.length);
@@ -286,7 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
         timerId = setInterval(moveDown, speed);
     }
-    
 
     // Handle keyboard controls for Tetromino movement
     document.addEventListener('keydown', (e) => {
