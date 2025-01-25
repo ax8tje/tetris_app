@@ -65,17 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const miniWidth = 4;
 
     const lTetromino = [
-        [1, width + 1, width * 2 + 1, width * 2 + 2],
-        [width, width + 1, width + 2, 2],
-        [0, 1, width + 1, width * 2 + 1],
-        [width, width + 1, width + 2, width * 2]
+        [width, width+1, width+2, 2],
+        [1, width+1, 2*width+1, 2*width+2],
+        [2*width, width, width + 1, width +2],
+        [0, 1, width+1, 2*width+1]
     ];
 
     const zTetromino = [
-        [0, width, width + 1, width * 2 + 1],
-        [width + 1, width + 2, width * 2, width * 2 + 1],
-        [0, width, width + 1, width * 2 + 1],
-        [width + 1, width + 2, width * 2, width * 2 + 1]
+        [0, 1, width+1, width+2],
+        [2, width+1, width+2, 2*width+1],
+        [width, width + 1, 2 * width + 1, 2 * width + 2],
+        [1, width, width + 1, 2*width]
     ];
 
     const tTetromino = [
@@ -86,31 +86,31 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const oTetromino = [
-        [0, 1, width, width + 1],
-        [0, 1, width, width + 1],
-        [0, 1, width, width + 1],
-        [0, 1, width, width + 1]
+        [1,2, width+1,width+2],
+        [1,2, width+1,width+2],
+        [1,2, width+1,width+2],
+        [1,2, width+1,width+2]
     ];
 
     const iTetromino = [
-        [1, width + 1, width * 2 + 1, width * 3 + 1],
-        [width, width + 1, width + 2, width + 3],
-        [1, width + 1, width * 2 + 1, width * 3 + 1],
-        [width, width + 1, width + 2, width + 3]
+        [width,width+1,width+2,width+3],
+        [2,width + 2, 2*width+2,3*width+2],
+        [2*width, 2*width + 1, 2*width+2, 2*width+3],
+        [1, width + 1, 2*width + 1, 3*width + 1]
     ];
 
     const sTetromino = [
-        [1, width, width + 1, width * 2],
-        [0, 1, width + 1, width + 2],
-        [1, width, width + 1, width * 2],
-        [0, 1, width + 1, width + 2]
+        [1,2,width,width+1],
+        [1,width+1,width+2,2*width+2],
+        [width+1, width+2, 2*width, 2*width + 1],
+        [0, width, width + 1, 2*width + 1]
     ];
 
     const jTetromino = [
-        [1, width + 1, width * 2, width * 2 + 1],
-        [0, width, width + 1, width + 2],
-        [0, 1, width, width * 2],
-        [0, 1, 2, width + 2]
+        [0,width,width+1,width+2],
+        [1,2,width+1,width*2+1],
+        [width+1,width+2,width, 2*width+2],
+        [1,width+1,width*2,width*2+1]
     ];
 
     const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino, sTetromino, jTetromino];
@@ -178,9 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
             nextRandom = Math.floor(Math.random() * theTetrominoes.length);
             current = theTetrominoes[random][currentRotation];
             currentPosition = 4;
+            addScore();
             draw();
             displayNextTetromino();
-            addScore();
             gameOver();
         }
     }
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add score for cleared rows
     function addScore() {
-        for (let i = GRID_HEIGHT - 2; i >= 0; i--) { // Start from the second-to-last row
+        for (let i = GRID_HEIGHT - 1; i >= 0; i--) {
             const start = i * GRID_WIDTH;
             const row = Array.from({ length: GRID_WIDTH }, (_, index) => start + index);
     
@@ -209,23 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
     
                 squares.unshift(...emptySquares);
-    
-                // Recreate bottom row with "taken" class
-                for (let j = GRID_SIZE - GRID_WIDTH; j < GRID_SIZE; j++) {
-                    squares[j].classList.add('taken');
-                }
-    
                 grid.innerHTML = '';
                 squares.forEach((square) => grid.appendChild(square));
     
-                i++; // Recheck the current row
+                // Recheck the same row after shifting down
+                i++;
             }
         }
     }
-    
-    
-    
-    
     
 
     // End the game if a Tetromino cannot move
@@ -238,15 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Move the Tetromino to the left
-    function moveLeft() {
-        undraw();
-        const isAtLeftEdge = current.some((index) => (currentPosition + index) % width === 0);
-        if (!isAtLeftEdge) currentPosition -= 1;
-        if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) currentPosition += 1;
-        draw();
-    }
-
     // Move the Tetromino to the right
     function moveRight() {
         undraw();
@@ -256,13 +238,117 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
     }
 
-    // Rotate the Tetromino
-    function rotate() {
+    // Move the Tetromino to the left
+    function moveLeft() {
         undraw();
-        currentRotation = (currentRotation + 1) % current.length;
-        current = theTetrominoes[random][currentRotation];
+        const isAtLeftEdge = current.some((index) => (currentPosition + index) % width === 0);
+        if (!isAtLeftEdge) currentPosition -= 1;
+        if (current.some((index) => squares[currentPosition + index]?.classList.contains('taken'))) currentPosition += 1;
         draw();
     }
+
+    
+// Wall kick data for JLSTZ and I Tetrominoes
+const wallKickData = {
+    JLSTZ: {
+        "0>R": [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        "R>0": [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+        "R>2": [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+        "2>R": [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        "2>L": [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+        "L>2": [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        "L>0": [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+        "0>L": [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+    },
+    I: {
+        "0>R": [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]],
+        "R>0": [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
+        "R>2": [[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
+        "2>R": [[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]],
+        "2>L": [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
+        "L>2": [[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]],
+        "L>0": [[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]],
+        "0>L": [[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
+    },
+    O: {}, // O Tetromino does not have wall kicks
+};
+
+// Rotate function with wall kick support
+function rotate(isClockwise = true) {
+    const nextRotation = (currentRotation + (isClockwise ? 1 : -1) + 4) % 4;
+    const currentState = ["0", "R", "2", "L"][currentRotation];
+    const nextState = ["0", "R", "2", "L"][nextRotation];
+
+    // Select the correct kick data for the tetromino
+    const kicks = random === 4 ? wallKickData.I[`${currentState}>${nextState}`] : wallKickData.JLSTZ[`${currentState}>${nextState}`] || [];
+
+    const nextTetromino = theTetrominoes[random][nextRotation];
+
+    // Validation helper
+    const isValidPosition = (position, tetromino) => 
+    tetromino.every((index) => {
+        const newIndex = position + index;
+
+        console.log(`Checking newIndex: ${newIndex}, Current Position: ${position}, Tetromino Index: ${index}`);
+
+        // Bounds check
+        if (newIndex < 0 || newIndex >= GRID_SIZE) {
+            console.log(`Out of bounds: ${newIndex}`);
+            return false;
+        }
+
+        // Prevent row wrapping
+        const startCol = position % GRID_WIDTH;
+        const endCol = (newIndex) % GRID_WIDTH;
+
+        if (Math.abs(startCol - endCol) > index % GRID_WIDTH) {
+            console.log(`Row wrapping detected: StartCol: ${startCol}, EndCol: ${endCol}`);
+            return false;
+        }
+
+        // Check if position is taken
+        if (squares[newIndex]?.classList.contains("taken")) {
+            console.log(`Position taken: ${newIndex}`);
+            return false;
+        }
+
+        return true;
+    });
+
+    
+
+    // Attempt basic rotation
+    if (isValidPosition(currentPosition, nextTetromino)) {
+        undraw();
+        currentRotation = nextRotation;
+        current = nextTetromino;
+        draw();
+        return;
+    }
+
+    // Attempt wall kicks
+    for (const [dx, dy] of kicks) {
+        const offset = dx + dy * GRID_WIDTH;
+        const newPosition = currentPosition + offset;
+    
+        console.log(`Testing kick offset: [${dx}, ${dy}] -> New Position: ${newPosition}`);
+        
+        if (isValidPosition(newPosition, nextTetromino)) {
+            undraw();
+            currentPosition = newPosition;
+            currentRotation = nextRotation;
+            current = nextTetromino;
+            draw();
+            return;
+        }
+    }
+    
+
+    console.log("Rotation failed: No valid positions found.");
+}
+
+    
+    
 
     // Start or pause the game
     startButton.addEventListener('click', () => {
@@ -314,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowDown') moveDown();
         if (e.key === 'ArrowUp') rotate();
     });
+    
 
     // Hamburger Menu Integration
     function pauseGame() {
